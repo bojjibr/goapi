@@ -1,28 +1,18 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
-	"os"
+
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	port := os.Getenv("PORT")
-	if len(port) == 0 {
-		port = "8000"
-	}
+	r := gin.Default()
+	r.GET("/ping", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{
+			"message": "pong",
+		})
+	})
 
-	addr := ":" + port
-
-	fmt.Printf("Starting web server, listering on %s\n", addr)
-
-	err := http.ListenAndServe(addr, http.HandlerFunc(webServer))
-	if err != nil {
-		panic(err)
-	}
-}
-
-func webServer(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(200)
-	w.Write([]byte("hello world"))
+	r.Run(":8080")
 }
